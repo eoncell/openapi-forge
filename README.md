@@ -33,14 +33,14 @@ task install
 ### 2. Design Your API
 
 ```bash
-# 👈 <span style="color: green">**WORK HERE**</span>: Customize the API specifications for your domain
+# 👈 🟢 **WORK HERE**: Customize the API specifications for your domain
 vim api/resources/users/users.yaml
 vim api/schemas/users/User.yaml
 
-# 🔧 <span style="color: green">**HANDS-OFF**</span>: Generate adapters from your specifications
+# 🔧 🟢 **HANDS-OFF**: Generate adapters from your specifications
 task generate
 
-# 📦 <span style="color: green">**IMPORT THESE**</span>: Verify everything works
+# 📦 🟢 **IMPORT THESE**: Verify everything works
 ls adapters/go/
 ls adapters/python/
 ls adapters/typescript/
@@ -121,22 +121,22 @@ const users: User[] = await UsersService.getUserList();
 
 ```
 openapi-forge/
-├── api/                    # API specifications (Domain Layer) 👈 <span style="color: green">**YOU WORK HERE**</span>
+├── api/                   # API specifications (Domain Layer) 👈 YOU WORK HERE [make changes here then run task]
 │   ├── openapi.yaml       # Main OpenAPI spec
 │   ├── parameters/        # Reusable parameters
 │   ├── resources/         # API endpoint definitions
 │   └── schemas/           # Data models and schemas
-├── generators/            # Code generators (Application Layer) 🔧 <span style="color: green">**HANDS-OFF**</span>
-│   ├── go/               # Go toolchain (oapi-codegen)
-│   ├── python/           # Python toolchain (datamodel-code-generator)
-│   └── typescript/       # TypeScript toolchain (@hey-api/openapi-ts)
-├── adapters/             # Generated adapters (Infrastructure Layer) 📦 <span style="color: green">**YOU IMPORT THESE**</span>
-│   ├── go/              # Go server + models
-│   ├── python/          # FastAPI server + models
-│   └── typescript/      # TypeScript client + types
-├── openapi/             # Bundled OpenAPI spec
-├── package.json         # Core tooling (Redocly, Spectral)
-└── Taskfile.yml         # Build automation
+├── generators/            # Code generators (Application Layer) 🔧 HANDS-OFF [mostly]
+│   ├── go/               
+│   ├── python/           
+│   └── typescript/       
+├── adapters/              # Generated API 👈 YOU IMPORT THESE [to your project]
+│   ├── go/              
+│   ├── python/          
+│   └── typescript/      
+├── openapi/               # Bundled OpenAPI spec
+├── package.json           # Core tooling (Redocly, Spectral)
+└── Taskfile.yml           # Build automation
 ```
 
 ### `api/` - API Specifications (Domain Layer) 👈 **You work here!**
