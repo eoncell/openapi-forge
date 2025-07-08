@@ -1,6 +1,5 @@
 .flake8
 .gitignore
-.openapi-generator-ignore
 Dockerfile
 README.md
 docker-compose.yaml
@@ -39,6 +38,3 @@ src/contracts/models/user_update_email_request.py
 src/contracts/models/user_update_request.py
 src/contracts/security_api.py
 tests/conftest.py
-tests/test_authentication_api.py
-tests/test_health_api.py
-tests/test_users_api.py

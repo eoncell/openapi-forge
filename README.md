@@ -33,14 +33,14 @@ task install
 ### 2. Design Your API
 
 ```bash
-# Customize the API specifications for your domain
+# 👈 WORK HERE: Customize the API specifications for your domain
 vim api/resources/users/users.yaml
 vim api/schemas/users/User.yaml
 
-# Generate adapters from your specifications
+# 🔧 HANDS-OFF: Generate adapters from your specifications
 task generate
 
-# Verify everything works
+# 📦 IMPORT THESE: Verify everything works
 ls adapters/go/
 ls adapters/python/
 ls adapters/typescript/
@@ -121,16 +121,16 @@ const users: User[] = await UsersService.getUserList();
 
 ```
 openapi-forge/
-├── api/                    # API specifications (Domain Layer)
+├── api/                    # API specifications (Domain Layer) 👈 YOU WORK HERE
 │   ├── openapi.yaml       # Main OpenAPI spec
 │   ├── parameters/        # Reusable parameters
 │   ├── resources/         # API endpoint definitions
 │   └── schemas/           # Data models and schemas
-├── generators/            # Code generators (Application Layer)
-│   ├── go/               # Go toolchain → See generators/go/README.md
-│   ├── python/           # Python toolchain → See generators/python/README.md
-│   └── typescript/       # TypeScript toolchain → See generators/typescript/README.md
-├── adapters/             # Generated adapters (Infrastructure Layer)
+├── generators/            # Code generators (Application Layer) 🔧 HANDS-OFF
+│   ├── go/               # Go toolchain (oapi-codegen)
+│   ├── python/           # Python toolchain (datamodel-code-generator)
+│   └── typescript/       # TypeScript toolchain (@hey-api/openapi-ts)
+├── adapters/             # Generated adapters (Infrastructure Layer) 📦 YOU IMPORT THESE
 │   ├── go/              # Go server + models
 │   ├── python/          # FastAPI server + models
 │   └── typescript/      # TypeScript client + types
@@ -139,31 +139,24 @@ openapi-forge/
 └── Taskfile.yml         # Build automation
 ```
 
-### `api/` - API Specifications (Domain Layer)
+### `api/` - API Specifications (Domain Layer) 👈 **You work here!**
 - `openapi.yaml` - Main API specification
 - `resources/` - Endpoint definitions by domain
 - `schemas/` - Reusable data models
 - `parameters/` - Shared parameters
 
-### `generators/` - Code Generators (Application Layer)
+> 💡 **Primary workspace**: This is where you design and customize your API specifications.
+
+### `generators/` - Code Generators (Application Layer) 🔧 **Mostly hands-off**
 Language-specific toolchains with isolated dependencies:
 
-#### 🐹 Go Generator (`generators/go/`)
-- **Tools**: oapi-codegen v2 with Chi router
-- **Output**: Server interfaces, models, middleware
-- **📖 Full Documentation**: [generators/go/README.md](generators/go/README.md)
+- **🐹 Go**: oapi-codegen v2 with Chi router → Server interfaces, models, middleware
+- **🐍 Python**: datamodel-code-generator + openapi-generator → FastAPI server, Pydantic models  
+- **🟦 TypeScript**: @hey-api/openapi-ts → Fetch client, complete type definitions
 
-#### 🐍 Python Generator (`generators/python/`)
-- **Tools**: datamodel-code-generator + openapi-generator
-- **Output**: FastAPI server, Pydantic models
-- **📖 Full Documentation**: [generators/python/README.md](generators/python/README.md)
+> ⚠️ **Implementation details**: You rarely need to modify these. The only common change is updating dependency versions in `requirements.txt`, `package.json`, or `go.mod`.
 
-#### 🟦 TypeScript Generator (`generators/typescript/`)
-- **Tools**: @hey-api/openapi-ts
-- **Output**: Fetch client, complete type definitions
-- **📖 Full Documentation**: [generators/typescript/README.md](generators/typescript/README.md)
-
-### `adapters/` - Generated Adapters (Infrastructure Layer)
+### `adapters/` - Generated Adapters (Infrastructure Layer) 📦 **You import these**
 - Production-ready code generated from specifications
 - Import these as packages in your services/applications
 
@@ -204,10 +197,10 @@ task all           # Complete build: install → build → generate → lint
 - ✅ Include examples in schemas
 
 ### Development Workflow
-- ✅ Design API first in `api/openapi.yaml`
-- ✅ Generate adapters with `task generate`
-- ✅ Import adapters as packages (not copy!)
-- ✅ Implement business logic using generated types
+- ✅ **Work in `api/` directory** - Design your API specifications
+- ✅ **Run `task generate`** - Generate adapters automatically
+- ✅ **Import adapters as packages** - Use in your services (not copy!)
+- ✅ **Rarely touch `generators/`** - Only for dependency version updates
 
 ### Versioning
 - ✅ Version your API specifications
@@ -223,16 +216,16 @@ task all           # Complete build: install → build → generate → lint
 
 ## 🔍 Need More Details?
 
-- **Go Generator**: [generators/go/README.md](generators/go/README.md)
-- **Python Generator**: [generators/python/README.md](generators/python/README.md)
-- **TypeScript Generator**: [generators/typescript/README.md](generators/typescript/README.md)
+The generators are **implementation details** that you rarely need to understand. The main workflow is:
 
-Each generator README contains:
-- Detailed tool configuration
-- Advanced usage examples
-- Implementation patterns
-- Dependencies and setup
-- Troubleshooting guides
+1. **Customize** your API specifications in `api/`
+2. **Generate** adapters with `task generate`
+3. **Import** adapters in your services
+
+If you need to update generator dependencies:
+- **Go**: Update `generators/go/go.mod`
+- **Python**: Update `generators/python/requirements.txt`
+- **TypeScript**: Update `generators/typescript/package.json`
 
 ## 🤝 Contributing
 
