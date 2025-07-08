@@ -1,8 +1,0 @@
-package: contracts
-output: gen/go/server.gen.go
-generate:
-  chi-server: true
-  strict-server: true
-  embedded-spec: false
-output-options:
-  skip-prune: true

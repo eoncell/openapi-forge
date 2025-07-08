@@ -1,0 +1,1225 @@
+openapi: 3.0.2
+info:
+  contact:
+    name: Contracts Blueprint Team
+    url: https://github.com/example/contracts-blueprint
+  description: |
+    # Contracts Blueprint API
+
+    A simple API blueprint demonstrating enterprise-grade OpenAPI specifications
+    with multi-language code generation support for Go, Python, and TypeScript.
+
+    This API provides basic authentication and user management functionality.
+
+    ## Features
+    - JWT-based authentication
+    - User CRUD operations
+    - Multi-language SDK generation
+    - Comprehensive error handling
+
+    ## Error Codes
+    - `ERR_INTERNAL`: Internal server error
+    - `ERR_INVALID_ARG`: Invalid argument(s) provided
+    - `ERR_NOT_FOUND`: Resource not found
+    - `ERR_ALREADY_EXISTS`: Resource already exists
+    - `ERR_ACCESS_DENIED`: Access denied
+    - `ERR_INVALID_CREDENTIALS`: Invalid authentication credentials
+    - `ERR_VALIDATION_FAILED`: Request validation failed
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Contracts Blueprint API
+  version: 1.0.0
+servers:
+- description: Production server
+  url: https://api.example.com
+- description: Local development server
+  url: http://localhost:8080
+security:
+- bearerAuth: []
+tags:
+- description: Health check endpoints
+  name: Health
+- description: User authentication
+  name: Authentication
+- description: User management
+  name: Users
+paths:
+  /v1/health:
+    get:
+      description: Check API health status
+      operationId: getHealthStatus
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getHealthStatus_200_response"
+          description: Service is healthy
+        "500":
+          content:
+            application/json:
+              examples:
+                ERR_INTERNAL:
+                  value:
+                    code: ERR_INTERNAL
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Internal server error
+      security: []
+      summary: Health check
+      tags:
+      - Health
+  /v1/auth/login:
+    post:
+      description: |
+        Authenticate a user with email/username and password.
+        Returns JWT tokens for subsequent API calls.
+      operationId: authenticateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRequestPayload"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authenticateUser_200_response"
+          description: Login successful
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid credentials
+      security: []
+      summary: User login
+      tags:
+      - Authentication
+  /v1/auth/register:
+    post:
+      description: Create a new user account
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequestPayload"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authenticateUser_200_response"
+          description: User registered successfully
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request
+        "409":
+          content:
+            application/json:
+              examples:
+                ERR_ALREADY_EXISTS:
+                  value:
+                    code: ERR_ALREADY_EXISTS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: User already exists
+      security: []
+      summary: Register new user
+      tags:
+      - Authentication
+  /v1/auth/refresh:
+    post:
+      description: |
+        Refresh access token using refresh token.
+        Returns new JWT tokens.
+      operationId: refreshTokens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthTokenRefreshRequestPayload"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: Token refreshed successfully
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid refresh token
+      security: []
+      summary: Refresh tokens
+      tags:
+      - Authentication
+  /v1/auth/logout:
+    post:
+      description: Logout user and invalidate tokens
+      operationId: logoutUser
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/logoutUser_200_response"
+          description: Logout successful
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized
+      summary: User logout
+      tags:
+      - Authentication
+  /v1/users:
+    get:
+      description: "Get users based on provided filters, sorting and pagination parameters."
+      operationId: getUserList
+      parameters:
+      - content:
+          application/json:
+            schema:
+              description: Users request payload.
+              properties:
+                limit:
+                  $ref: "#/components/schemas/Limit"
+                offset:
+                  $ref: "#/components/schemas/PaginationOffset"
+                filter:
+                  description: Filter criteria for selecting records.
+                  properties:
+                    text:
+                      description: Full text search.
+                      type: string
+                    statuses:
+                      description: Filter by user statuses.
+                      items:
+                        $ref: "#/components/schemas/UserStatus"
+                      type: array
+                    roles:
+                      description: Filter by user roles.
+                      items:
+                        $ref: "#/components/schemas/UserRole"
+                      type: array
+                  type: object
+                sortBy:
+                  description: Fields to sort the results by.
+                  items:
+                    $ref: "#/components/schemas/UserSortField"
+                  type: array
+                orderBy:
+                  $ref: "#/components/schemas/OrderBy"
+              required:
+              - limit
+              - offset
+              type: object
+        description: "Filter, sort and pagination query to fetch records."
+        in: query
+        name: UsersRequestPayload
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getUserList_200_response"
+          description: Successful retrieval of users.
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request.
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized.
+      summary: List users
+      tags:
+      - Users
+    post:
+      description: Create a new user (admin only)
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+          description: User successfully created. A new user is returned.
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request.
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized.
+        "409":
+          content:
+            application/json:
+              examples:
+                ERR_ALREADY_EXISTS:
+                  value:
+                    code: ERR_ALREADY_EXISTS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: User already exists.
+      summary: Create user
+      tags:
+      - Users
+  /v1/users/{userId}:
+    delete:
+      description: Delete a specific user
+      operationId: deleteUserById
+      parameters:
+      - description: User unique identifier
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/logoutUser_200_response"
+          description: User deleted successfully
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request.
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized.
+        "404":
+          content:
+            application/json:
+              examples:
+                ERR_NOT_FOUND:
+                  value:
+                    code: ERR_NOT_FOUND
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: User not found.
+      summary: Delete user
+      tags:
+      - Users
+    get:
+      description: Retrieve a specific user by their ID
+      operationId: getUserById
+      parameters:
+      - description: User unique identifier
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+          description: User retrieved successfully
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request.
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized.
+        "404":
+          content:
+            application/json:
+              examples:
+                ERR_NOT_FOUND:
+                  value:
+                    code: ERR_NOT_FOUND
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: User not found.
+      summary: Get user by ID
+      tags:
+      - Users
+    put:
+      description: Update a specific user's information
+      operationId: updateUserById
+      parameters:
+      - description: User unique identifier
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+          description: User updated successfully
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request.
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized.
+        "404":
+          content:
+            application/json:
+              examples:
+                ERR_NOT_FOUND:
+                  value:
+                    code: ERR_NOT_FOUND
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: User not found.
+      summary: Update user
+      tags:
+      - Users
+  /v1/users/{userId}/email:
+    put:
+      description: Update user email address (requires password confirmation)
+      operationId: updateUserEmail
+      parameters:
+      - description: User unique identifier
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateEmailRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+          description: User email updated successfully
+        "400":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_ARG:
+                  value:
+                    code: ERR_INVALID_ARG
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid request
+        "401":
+          content:
+            application/json:
+              examples:
+                ERR_INVALID_CREDENTIALS:
+                  value:
+                    code: ERR_INVALID_CREDENTIALS
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              examples:
+                ERR_ACCESS_DENIED:
+                  value:
+                    code: ERR_ACCESS_DENIED
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Access denied
+        "404":
+          content:
+            application/json:
+              examples:
+                ERR_NOT_FOUND:
+                  value:
+                    code: ERR_NOT_FOUND
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: User not found
+      summary: Update user email
+      tags:
+      - Users
+components:
+  parameters:
+    UsersRequestPayload:
+      content:
+        application/json:
+          schema:
+            description: Users request payload.
+            properties:
+              limit:
+                $ref: "#/components/schemas/Limit"
+              offset:
+                $ref: "#/components/schemas/PaginationOffset"
+              filter:
+                description: Filter criteria for selecting records.
+                properties:
+                  text:
+                    description: Full text search.
+                    type: string
+                  statuses:
+                    description: Filter by user statuses.
+                    items:
+                      $ref: "#/components/schemas/UserStatus"
+                    type: array
+                  roles:
+                    description: Filter by user roles.
+                    items:
+                      $ref: "#/components/schemas/UserRole"
+                    type: array
+                type: object
+              sortBy:
+                description: Fields to sort the results by.
+                items:
+                  $ref: "#/components/schemas/UserSortField"
+                type: array
+              orderBy:
+                $ref: "#/components/schemas/OrderBy"
+            required:
+            - limit
+            - offset
+            type: object
+      description: "Filter, sort and pagination query to fetch records."
+      in: query
+      name: UsersRequestPayload
+      required: true
+    UserId:
+      description: User unique identifier
+      explode: false
+      in: path
+      name: userId
+      required: true
+      schema:
+        format: uuid
+        type: string
+      style: simple
+  schemas:
+    Error:
+      description: Error response payload.
+      example:
+        code: ERR_ACCESS_DENIED
+        details:
+          key: ""
+        message: The requested resource was not found
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        code:
+          description: |
+            - ERR_ACCESS_DENIED: Access denied. Usually that error can occur when the user is not authorized to perform the operation (e.g. buyer tries to remove admin or buyer tries to add a new user). Mostly theoretical error.
+            - ERR_ALREADY_EXISTS: The record already exists in the system. Usually that error can occur during adding users, that were already added to the system.
+            - ERR_ALREADY_VERIFIED: The request was already verified. Usually that error can occur during verification of the code, that was already verified.
+            - ERR_AUTH_CODE_INVALID: The provided auth code is invalid. Usually that error can occur during verification of the auth code, that is invalid.
+            - ERR_INSUFFICIENT_FUNDS: Insufficient funds. Usually that error can occur during moving (transferring, withdrawing) funds from the account or card, when the source doesn't have enough of funds.
+            - ERR_INTERNAL: Internal server error. Usually that error indicates some general internal server error, that has nothing to do with client's data, so it can be used with 500 http code.
+            - ERR_INVALID_ARG: Invalid argument(s) was (were) provided during the request. Usually that error can occur when one or more arguments (or their combination) were provided in incorrect format or the operation with the given arguments is prohibited (e.g. you can't delete the general account). Usually that error could be eliminated by calling another endpoint in advance, that provides correct values (or options) to call the former endpoint.
+            - ERR_INVALID_CREDENTIALS: Invalid credentials were provided during the request. Usually that error can occur during providing invalid password and/or email.
+            - ERR_NOT_FOUND: The resource was not found. Usually that error can occur during requesting the resource, that was already removed and can't be accessed anymore (e.g. requesting deleted transaction/user/account information).
+            - ERR_WEAK_PASSWORD: Weak password. Usually that error can occur during providing too weak password for sign up or update password processes. That error should not be the case for web clients, since the password weakness is validated on the FE, so if you encountered that error, probably the FE and the BE are not aligned properly with each other.
+            - ERR_CONTACT_SUPPORT: Some error occurred that needs to be escalated to support. That might signal that liquidity is low.
+            - ERR_SELF_TRANSFER: It is not allowed to transfer funds from an account to itself.
+          enum:
+          - ERR_ACCESS_DENIED
+          - ERR_ALREADY_EXISTS
+          - ERR_ALREADY_VERIFIED
+          - ERR_AUTH_CODE_INVALID
+          - ERR_INSUFFICIENT_FUNDS
+          - ERR_INTERNAL
+          - ERR_INVALID_ARG
+          - ERR_INVALID_CREDENTIALS
+          - ERR_NOT_FOUND
+          - ERR_WEAK_PASSWORD
+          - ERR_CONTACT_SUPPORT
+          - ERR_SELF_TRANSFER
+          title: code
+          type: string
+        message:
+          description: Human-readable error message
+          example: The requested resource was not found
+          title: message
+          type: string
+        details:
+          additionalProperties: true
+          description: Additional error details
+          title: details
+          type: object
+        timestamp:
+          description: Error occurrence timestamp
+          format: date-time
+          title: timestamp
+          type: string
+      required:
+      - code
+      title: Error
+      type: object
+    Email:
+      description: Email address
+      example: user@example.com
+      format: email
+      title: email
+      type: string
+    Password:
+      description: Password (minimum 8 characters)
+      example: SecurePassword123!
+      format: password
+      minLength: 8
+      title: password
+      type: string
+    AuthRequestPayload:
+      description: Request payload for user authentication
+      example:
+        password: SecurePassword123!
+        isRememberMe: false
+        email: user@example.com
+      properties:
+        email:
+          description: Email address
+          example: user@example.com
+          format: email
+          title: email
+          type: string
+        password:
+          description: Password (minimum 8 characters)
+          example: SecurePassword123!
+          format: password
+          minLength: 8
+          title: password
+          type: string
+        isRememberMe:
+          default: false
+          description: Extend token expiration
+          title: isRememberMe
+          type: boolean
+      required:
+      - email
+      - password
+      title: AuthRequestPayload
+      type: object
+    TokenResponse:
+      description: Authentication token response
+      example:
+        refreshTokenExpiresInSeconds: 604800
+        accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        accessTokenExpiresInSeconds: 3600
+        refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      properties:
+        accessToken:
+          description: JWT access token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          title: accessToken
+          type: string
+        refreshToken:
+          description: JWT refresh token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          title: refreshToken
+          type: string
+        accessTokenExpiresInSeconds:
+          description: Access token expiration time in seconds
+          example: 3600
+          title: accessTokenExpiresInSeconds
+          type: integer
+        refreshTokenExpiresInSeconds:
+          description: Refresh token expiration time in seconds
+          example: 604800
+          title: refreshTokenExpiresInSeconds
+          type: integer
+      required:
+      - accessToken
+      - accessTokenExpiresInSeconds
+      - refreshToken
+      - refreshTokenExpiresInSeconds
+      title: TokenResponse
+      type: object
+    Id:
+      description: Unique identifier
+      example: 123e4567-e89b-12d3-a456-426614174000
+      format: uuid
+      title: id
+      type: string
+    Name:
+      default: ""
+      description: Name (either first name or last name) of the user.
+      example: John
+      pattern: "^.{0,50}$"
+      title: firstName
+      type: string
+    UserRole:
+      description: Profile role.
+      enum:
+      - ADMIN
+      - BUYER
+      - TEAM_LEAD
+      example: BUYER
+      title: UserRole
+      type: string
+    UserStatus:
+      description: |
+        User status.
+        - ACTIVE: The user is currently active and operational.
+        - PENDING: User has been invited but not yet activated by the user.
+        - FROZEN: The user is inactive and not available for transactions.
+        - DELETED: The user has been deleted and is no longer active.
+      enum:
+      - ACTIVE
+      - PENDING
+      - FROZEN
+      - DELETED
+      example: ACTIVE
+      title: UserStatus
+      type: string
+    AvatarUrl:
+      description: User avatar URL
+      example: https://example.com/avatars/user.jpg
+      format: uri
+      maxLength: 500
+      nullable: true
+      title: avatarUrl
+      type: string
+    User:
+      description: User entity representing a system user
+      example:
+        firstName: John
+        lastName: John
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        role: BUYER
+        lastLoginAt: 2000-01-23T04:56:07.000+00:00
+        avatarUrl: https://example.com/avatars/user.jpg
+        id: 123e4567-e89b-12d3-a456-426614174000
+        email: user@example.com
+        status: ACTIVE
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          description: Unique identifier
+          example: 123e4567-e89b-12d3-a456-426614174000
+          format: uuid
+          title: id
+          type: string
+        email:
+          description: Email address
+          example: user@example.com
+          format: email
+          title: email
+          type: string
+        firstName:
+          default: ""
+          description: Name (either first name or last name) of the user.
+          example: John
+          pattern: "^.{0,50}$"
+          title: firstName
+          type: string
+        lastName:
+          default: ""
+          description: Name (either first name or last name) of the user.
+          example: John
+          pattern: "^.{0,50}$"
+          title: firstName
+          type: string
+        role:
+          $ref: "#/components/schemas/UserRole"
+        status:
+          $ref: "#/components/schemas/UserStatus"
+        avatarUrl:
+          description: User avatar URL
+          example: https://example.com/avatars/user.jpg
+          format: uri
+          maxLength: 500
+          nullable: true
+          title: avatarUrl
+          type: string
+        createdAt:
+          description: Creation timestamp
+          format: date-time
+          title: createdAt
+          type: string
+        updatedAt:
+          description: Last update timestamp
+          format: date-time
+          title: updatedAt
+          type: string
+        lastLoginAt:
+          description: Last login timestamp
+          format: date-time
+          nullable: true
+          title: lastLoginAt
+          type: string
+      required:
+      - createdAt
+      - email
+      - firstName
+      - id
+      - lastName
+      - role
+      - status
+      - updatedAt
+      title: User
+      type: object
+    RegisterRequestPayload:
+      description: Request payload for user registration
+      example:
+        firstName: John
+        lastName: John
+        password: SecurePassword123!
+        email: user@example.com
+      properties:
+        email:
+          description: Email address
+          example: user@example.com
+          format: email
+          title: email
+          type: string
+        password:
+          description: Password (minimum 8 characters)
+          example: SecurePassword123!
+          format: password
+          minLength: 8
+          title: password
+          type: string
+        firstName:
+          default: ""
+          description: Name (either first name or last name) of the user.
+          example: John
+          pattern: "^.{0,50}$"
+          title: firstName
+          type: string
+        lastName:
+          default: ""
+          description: Name (either first name or last name) of the user.
+          example: John
+          pattern: "^.{0,50}$"
+          title: firstName
+          type: string
+      required:
+      - email
+      - firstName
+      - lastName
+      - password
+      title: RegisterRequestPayload
+      type: object
+    AuthTokenRefreshRequestPayload:
+      description: Request payload for refreshing authentication tokens
+      example:
+        refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      properties:
+        refreshToken:
+          description: JWT refresh token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          title: refreshToken
+          type: string
+      required:
+      - refreshToken
+      title: AuthTokenRefreshRequestPayload
+      type: object
+    Limit:
+      default: 20
+      description: Limit of records count to return.
+      maximum: 100
+      minimum: 1
+      type: integer
+    PaginationOffset:
+      default: 0
+      description: Offset of records to skip.
+      minimum: 0
+      type: integer
+    UserSortField:
+      description: Enum defining the fields by which user can sort the users list.
+      enum:
+      - FULL_NAME
+      title: UserSortField
+      type: string
+    Order:
+      description: Enum for sorting order.
+      enum:
+      - ASC
+      - DESC
+      title: Order
+      type: string
+    OrderBy:
+      description: "Order of sorting (ascending/descending). `sortBy` and `orderBy`\
+        \ arrays have always the same length, and each element or `sortBy` array corresponds\
+        \ to the appropriate element of `orderBy` array."
+      items:
+        $ref: "#/components/schemas/Order"
+      type: array
+    PaginationMeta:
+      description: Pagination metadata for list responses
+      example:
+        total: 150
+        offset: 0
+        limit: 20
+      properties:
+        limit:
+          description: Number of items per page
+          example: 20
+          maximum: 100
+          minimum: 1
+          title: limit
+          type: integer
+        offset:
+          description: Offset of records to skip
+          example: 0
+          minimum: 0
+          title: offset
+          type: integer
+        total:
+          description: Total number of items
+          example: 150
+          minimum: 0
+          title: total
+          type: integer
+      required:
+      - limit
+      - offset
+      - total
+      title: PaginationMeta
+      type: object
+    UserCreateRequest:
+      description: Request payload for creating a new user
+      example:
+        firstName: John
+        lastName: John
+        password: SecurePassword123!
+        role: BUYER
+        email: user@example.com
+        status: ACTIVE
+      properties:
+        email:
+          description: Email address
+          example: user@example.com
+          format: email
+          title: email
+          type: string
+        firstName:
+          default: ""
+          description: Name (either first name or last name) of the user.
+          example: John
+          pattern: "^.{0,50}$"
+          title: firstName
+          type: string
+        lastName:
+          default: ""
+          description: Name (either first name or last name) of the user.
+          example: John
+          pattern: "^.{0,50}$"
+          title: firstName
+          type: string
+        password:
+          description: Password (minimum 8 characters)
+          example: SecurePassword123!
+          format: password
+          minLength: 8
+          title: password
+          type: string
+        role:
+          $ref: "#/components/schemas/UserRole"
+        status:
+          $ref: "#/components/schemas/UserStatus"
+      required:
+      - email
+      - firstName
+      - lastName
+      - password
+      title: UserCreateRequest
+      type: object
+    UserUpdateRequest:
+      description: Request payload for updating user information
+      example:
+        firstName: John
+        lastName: John
+        role: BUYER
+        avatarUrl: https://example.com/avatars/user.jpg
+        status: ACTIVE
+      properties:
+        firstName:
+          default: ""
+          description: Name (either first name or last name) of the user.
+          example: John
+          pattern: "^.{0,50}$"
+          title: firstName
+          type: string
+        lastName:
+          default: ""
+          description: Name (either first name or last name) of the user.
+          example: John
+          pattern: "^.{0,50}$"
+          title: firstName
+          type: string
+        role:
+          $ref: "#/components/schemas/UserRole"
+        status:
+          $ref: "#/components/schemas/UserStatus"
+        avatarUrl:
+          description: User avatar URL
+          example: https://example.com/avatars/user.jpg
+          format: uri
+          maxLength: 500
+          nullable: true
+          title: avatarUrl
+          type: string
+      title: UserUpdateRequest
+      type: object
+    UserUpdateEmailRequest:
+      description: Request payload for updating user email
+      example:
+        password: SecurePassword123!
+        newEmail: user@example.com
+      properties:
+        newEmail:
+          description: Email address
+          example: user@example.com
+          format: email
+          title: email
+          type: string
+        password:
+          description: Password (minimum 8 characters)
+          example: SecurePassword123!
+          format: password
+          minLength: 8
+          title: password
+          type: string
+      required:
+      - newEmail
+      - password
+      title: UserUpdateEmailRequest
+      type: object
+    getHealthStatus_200_response:
+      example:
+        version: 1.0.0
+        status: healthy
+        timestamp: 2024-01-15T10:30:00Z
+      properties:
+        status:
+          example: healthy
+          title: status
+          type: string
+        timestamp:
+          example: 2024-01-15T10:30:00Z
+          format: date-time
+          title: timestamp
+          type: string
+        version:
+          example: 1.0.0
+          title: version
+          type: string
+      title: getHealthStatus_200_response
+      type: object
+    authenticateUser_200_response:
+      allOf:
+      - $ref: "#/components/schemas/TokenResponse"
+      - properties:
+          user:
+            $ref: "#/components/schemas/User"
+        required:
+        - user
+        type: object
+      example:
+        refreshTokenExpiresInSeconds: 604800
+        accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        accessTokenExpiresInSeconds: 3600
+        user:
+          firstName: John
+          lastName: John
+          createdAt: 2000-01-23T04:56:07.000+00:00
+          role: BUYER
+          lastLoginAt: 2000-01-23T04:56:07.000+00:00
+          avatarUrl: https://example.com/avatars/user.jpg
+          id: 123e4567-e89b-12d3-a456-426614174000
+          email: user@example.com
+          status: ACTIVE
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+        refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      title: authenticateUser_200_response
+    logoutUser_200_response:
+      example:
+        success: true
+      properties:
+        success:
+          example: true
+          title: success
+          type: boolean
+      title: logoutUser_200_response
+      type: object
+    getUserList_200_response:
+      example:
+        data:
+        - firstName: John
+          lastName: John
+          createdAt: 2000-01-23T04:56:07.000+00:00
+          role: BUYER
+          lastLoginAt: 2000-01-23T04:56:07.000+00:00
+          avatarUrl: https://example.com/avatars/user.jpg
+          id: 123e4567-e89b-12d3-a456-426614174000
+          email: user@example.com
+          status: ACTIVE
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+        - firstName: John
+          lastName: John
+          createdAt: 2000-01-23T04:56:07.000+00:00
+          role: BUYER
+          lastLoginAt: 2000-01-23T04:56:07.000+00:00
+          avatarUrl: https://example.com/avatars/user.jpg
+          id: 123e4567-e89b-12d3-a456-426614174000
+          email: user@example.com
+          status: ACTIVE
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+        meta:
+          total: 150
+          offset: 0
+          limit: 20
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/User"
+          title: data
+          type: array
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+      title: getUserList_200_response
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

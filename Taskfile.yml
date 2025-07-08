@@ -7,9 +7,10 @@ tasks:
   install:
     desc: Install dependencies for all languages
     cmds:
-      - go get github.com/go-chi/chi/v5 github.com/oapi-codegen/runtime
+      - cd generators/go && go mod download
       - go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
       - bun install
+      - cd generators/typescript && bun install
       - pipx install "datamodel-code-generator[http]"
 
   build:
@@ -36,19 +37,19 @@ tasks:
     desc: Generate Go code from OpenAPI spec
     deps: [build]
     cmds:
-      - mkdir -p gen/go
-      - oapi-codegen --config codegen/go/models.yaml {{.SPEC}} > gen/go/models.gen.go
-      - oapi-codegen --config codegen/go/server.yaml {{.SPEC}} > gen/go/server.gen.go
+      - mkdir -p adapters/go
+      - cd generators/go && oapi-codegen --config models.yaml ../../{{.SPEC}} > ../../adapters/go/models.gen.go
+      - cd generators/go && oapi-codegen --config server.yaml ../../{{.SPEC}} > ../../adapters/go/server.gen.go
 
   generate-python:
     desc: Generate Python code from OpenAPI spec
     deps: [build]
     cmds:
-      - mkdir -p gen/python
+      - mkdir -p adapters/python
       - |
         datamodel-codegen \
           --input {{.SPEC}} \
-          --output gen/python/models.py \
+          --output adapters/python/models.py \
           --output-model-type pydantic_v2.BaseModel \
           --target-python-version 3.11 \
           --use-schema-description \
@@ -61,10 +62,10 @@ tasks:
           --use-standard-collections \
           --use-union-operator
       - |
-        bunx openapi-generator-cli generate \
-          -i {{.SPEC}} \
+        cd generators/python && bunx openapi-generator-cli generate \
+          -i ../../{{.SPEC}} \
           -g python-fastapi \
-          -o gen/python/server \
+          -o ../../adapters/python/server \
           --package-name contracts \
           --additional-properties=packageVersion=1.0.0,fastapiImplementationPackage=impl,serverPort=8000
 
@@ -72,17 +73,17 @@ tasks:
     desc: Generate TypeScript code from OpenAPI spec
     deps: [build]
     cmds:
-      - mkdir -p gen/typescript
+      - mkdir -p adapters/typescript
       - |
-        bunx @hey-api/openapi-ts \
-          --input {{.SPEC}} \
-          --output gen/typescript/client \
+        cd generators/typescript && bunx @hey-api/openapi-ts \
+          --input ../../{{.SPEC}} \
+          --output ../../adapters/typescript/client \
           --client @hey-api/client-fetch \
           --plugins @hey-api/schemas @hey-api/sdk @hey-api/typescript
       - |
-        bunx @hey-api/openapi-ts \
-          --input {{.SPEC}} \
-          --output gen/typescript/types \
+        cd generators/typescript && bunx @hey-api/openapi-ts \
+          --input ../../{{.SPEC}} \
+          --output ../../adapters/typescript/types \
           --plugins @hey-api/typescript
 
   dev:
@@ -99,7 +100,7 @@ tasks:
     desc: Clean generated files
     cmds:
       - rm -rf openapi/
-      - rm -rf gen/
+      - rm -rf adapters/
 
   all:
     desc: Full build pipeline

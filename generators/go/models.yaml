@@ -1,0 +1,6 @@
+package: contracts
+output: ../../adapters/go/models.gen.go
+generate:
+  models: true
+output-options:
+  skip-prune: true

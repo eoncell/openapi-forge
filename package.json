@@ -4,15 +4,14 @@
   "description": "OpenAPI code generation forge supporting Go, Python, and TypeScript",
   "main": "index.js",
   "scripts": {
-    "build": "redocly bundle src/openapi.yaml --output openapi/openapi.yaml",
+    "build": "redocly bundle api/openapi.yaml --output openapi/openapi.yaml",
     "lint": "spectral lint openapi/openapi.yaml",
     "dev": "bun run build && redocly preview-docs openapi/openapi.yaml",
     "html": "bun run build && redocly build-docs openapi/openapi.yaml --output openapi/index.html"
   },
   "dependencies": {
     "@redocly/cli": "^1.25.13",
-    "@stoplight/spectral": "^6.5.0",
-    "@hey-api/openapi-ts": "^0.78.2"
+    "@stoplight/spectral": "^6.5.0"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.21.0"

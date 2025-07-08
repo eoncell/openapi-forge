@@ -1,0 +1,12 @@
+{
+  "name": "openapi-forge-typescript",
+  "version": "1.0.0",
+  "description": "TypeScript code generation for OpenAPI Forge",
+  "private": true,
+  "dependencies": {
+    "@hey-api/openapi-ts": "^0.78.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 

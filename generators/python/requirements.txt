@@ -1,0 +1,2 @@
+# Python dependencies for OpenAPI code generation
+datamodel-code-generator[http]>=0.25.0 
