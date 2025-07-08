@@ -146,8 +146,22 @@ openapi-forge/
 - `parameters/` - Shared parameters
 
 ### `generators/` - Code Generators (Application Layer)
-- Language-specific toolchains with isolated dependencies
-- See individual README files for detailed documentation
+Language-specific toolchains with isolated dependencies:
+
+#### 🐹 Go Generator (`generators/go/`)
+- **Tools**: oapi-codegen v2 with Chi router
+- **Output**: Server interfaces, models, middleware
+- **📖 Full Documentation**: [generators/go/README.md](generators/go/README.md)
+
+#### 🐍 Python Generator (`generators/python/`)
+- **Tools**: datamodel-code-generator + openapi-generator
+- **Output**: FastAPI server, Pydantic models
+- **📖 Full Documentation**: [generators/python/README.md](generators/python/README.md)
+
+#### 🟦 TypeScript Generator (`generators/typescript/`)
+- **Tools**: @hey-api/openapi-ts
+- **Output**: Fetch client, complete type definitions
+- **📖 Full Documentation**: [generators/typescript/README.md](generators/typescript/README.md)
 
 ### `adapters/` - Generated Adapters (Infrastructure Layer)
 - Production-ready code generated from specifications
@@ -179,34 +193,7 @@ task generate-typescript # Generate TypeScript client and types
 task all           # Complete build: install → build → generate → lint
 ```
 
-## 🛠️ Language Generators
 
-Each generator is a self-contained toolchain in the Application Layer:
-
-### 🐹 Go Generator
-- **Location**: `generators/go/`
-- **Tools**: oapi-codegen v2 with Chi router
-- **Output**: Server interfaces, models, middleware
-- **📖 Full Documentation**: [generators/go/README.md](generators/go/README.md)
-
-### 🐍 Python Generator
-- **Location**: `generators/python/`
-- **Tools**: datamodel-code-generator + openapi-generator
-- **Output**: FastAPI server, Pydantic models
-- **📖 Full Documentation**: [generators/python/README.md](generators/python/README.md)
-
-### 🟦 TypeScript Generator
-- **Location**: `generators/typescript/`
-- **Tools**: @hey-api/openapi-ts
-- **Output**: Fetch client, complete type definitions
-- **📖 Full Documentation**: [generators/typescript/README.md](generators/typescript/README.md)
-
-## 🚀 Benefits
-
-- **Single Source of Truth**: API contract drives all implementations
-- **Type Safety**: Generated code provides compile-time validation
-- **Consistency**: Same business logic across all language implementations
-- **Maintainability**: Changes in API automatically propagate to all clients/servers
 
 ## 🎯 Best Practices
 
@@ -226,6 +213,13 @@ Each generator is a self-contained toolchain in the Application Layer:
 - ✅ Version your API specifications
 - ✅ Tag releases after breaking changes
 - ✅ Update all consuming services
+
+## 🚀 Benefits
+
+- **Single Source of Truth**: API contract drives all implementations
+- **Type Safety**: Generated code provides compile-time validation
+- **Consistency**: Same business logic across all language implementations
+- **Maintainability**: Changes in API automatically propagate to all clients/servers
 
 ## 🔍 Need More Details?
 
