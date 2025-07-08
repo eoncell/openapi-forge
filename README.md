@@ -12,51 +12,6 @@ OpenAPI Forge demonstrates how to build enterprise-grade API tooling with:
 - **Developer-friendly** project structure and workflows
 - **Production-ready** generated adapters
 
-## 🏗️ Project Structure
-
-### `api/` - API Specifications (Domain Layer)
-- `openapi.yaml` - Main API specification
-- `resources/` - Endpoint definitions by domain
-- `schemas/` - Reusable data models
-- `parameters/` - Shared parameters
-
-### `generators/` - Code Generators (Application Layer)
-- Language-specific toolchains with isolated dependencies
-- See individual README files for detailed documentation
-
-### `adapters/` - Generated Adapters (Infrastructure Layer)
-- Production-ready code generated from specifications
-- Import these as packages in your services/applications
-
-### 🛠️ Root Configuration
-| File | Purpose |
-|------|---------|
-| `📄 Taskfile.yml` | Build automation and task orchestration |
-| `📄 package.json` | Core tooling (Redocly, Spectral) |
-| `📄 .spectral.yaml` | API linting rules |
-
-
-
-```
-openapi-forge/
-├── api/                    # API specifications (Domain Layer)
-│   ├── openapi.yaml       # Main OpenAPI spec
-│   ├── parameters/        # Reusable parameters
-│   ├── resources/         # API endpoint definitions
-│   └── schemas/           # Data models and schemas
-├── generators/            # Code generators (Application Layer)
-│   ├── go/               # Go toolchain → See generators/go/README.md
-│   ├── python/           # Python toolchain → See generators/python/README.md
-│   └── typescript/       # TypeScript toolchain → See generators/typescript/README.md
-├── adapters/             # Generated adapters (Infrastructure Layer)
-│   ├── go/              # Go server + models
-│   ├── python/          # FastAPI server + models
-│   └── typescript/      # TypeScript client + types
-├── openapi/             # Bundled OpenAPI spec
-├── package.json         # Core tooling (Redocly, Spectral)
-└── Taskfile.yml         # Build automation
-```
-
 ## 🚀 Quick Start
 
 ### 1. Create Your API Contracts Repository
@@ -104,6 +59,107 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
+## 📦 Using Your Contracts in Projects
+
+Now that you've published your contracts, here's how to import them in your services:
+
+### **Go Service**
+```go
+// go.mod
+module github.com/mycompany/user-service
+
+require (
+    github.com/mycompany/my-api-contracts/adapters/go v1.0.0
+)
+
+// main.go
+import (
+    "github.com/mycompany/my-api-contracts/adapters/go"
+    "github.com/go-chi/chi/v5"
+)
+
+func main() {
+    server := &MyServer{}
+    r := chi.NewRouter()
+    contracts.HandlerFromMux(server, r)
+    http.ListenAndServe(":8080", r)
+}
+```
+
+### **Python Service**
+```python
+# requirements.txt
+git+https://github.com/mycompany/my-api-contracts.git@v1.0.0#subdirectory=adapters/python
+
+# main.py
+from adapters.python.models import User, UserCreateRequest
+from adapters.python.server.src.contracts.apis.users_api_base import BaseUsersApi
+
+class UsersService(BaseUsersApi):
+    def get_users(self, limit: int = 10, offset: int = 0):
+        # Your implementation
+        pass
+```
+
+### **TypeScript Client**
+```typescript
+// package.json
+{
+  "dependencies": {
+    "my-api-contracts": "github:mycompany/my-api-contracts#v1.0.0"
+  }
+}
+
+// app.ts
+import { UsersService } from 'my-api-contracts/adapters/typescript/client';
+import type { User } from 'my-api-contracts/adapters/typescript/types';
+
+const users: User[] = await UsersService.getUserList();
+```
+
+## 🏗️ Project Structure
+
+```
+openapi-forge/
+├── api/                    # API specifications (Domain Layer)
+│   ├── openapi.yaml       # Main OpenAPI spec
+│   ├── parameters/        # Reusable parameters
+│   ├── resources/         # API endpoint definitions
+│   └── schemas/           # Data models and schemas
+├── generators/            # Code generators (Application Layer)
+│   ├── go/               # Go toolchain → See generators/go/README.md
+│   ├── python/           # Python toolchain → See generators/python/README.md
+│   └── typescript/       # TypeScript toolchain → See generators/typescript/README.md
+├── adapters/             # Generated adapters (Infrastructure Layer)
+│   ├── go/              # Go server + models
+│   ├── python/          # FastAPI server + models
+│   └── typescript/      # TypeScript client + types
+├── openapi/             # Bundled OpenAPI spec
+├── package.json         # Core tooling (Redocly, Spectral)
+└── Taskfile.yml         # Build automation
+```
+
+### `api/` - API Specifications (Domain Layer)
+- `openapi.yaml` - Main API specification
+- `resources/` - Endpoint definitions by domain
+- `schemas/` - Reusable data models
+- `parameters/` - Shared parameters
+
+### `generators/` - Code Generators (Application Layer)
+- Language-specific toolchains with isolated dependencies
+- See individual README files for detailed documentation
+
+### `adapters/` - Generated Adapters (Infrastructure Layer)
+- Production-ready code generated from specifications
+- Import these as packages in your services/applications
+
+### 🛠️ Root Configuration
+| File | Purpose |
+|------|---------|
+| `📄 Taskfile.yml` | Build automation and task orchestration |
+| `📄 package.json` | Core tooling (Redocly, Spectral) |
+| `📄 .spectral.yaml` | API linting rules |
+
 ## 🔧 Available Tasks
 
 ```bash
@@ -145,81 +201,8 @@ Each generator is a self-contained toolchain in the Application Layer:
 - **Output**: Fetch client, complete type definitions
 - **📖 Full Documentation**: [generators/typescript/README.md](generators/typescript/README.md)
 
-## 📋 Development Workflow
-
-### 1. API-First Development (In Your Contracts Repository)
-```bash
-# After copying this template to your own repository...
-
-# Design your API specifications
-vim api/resources/users/users.yaml
-vim api/schemas/users/User.yaml
-
-# Generate adapters from your custom specifications
-task generate
-
-# Version and publish your contracts
-git add . && git commit -m "feat: add user management API"
-git tag v1.0.0 && git push origin v1.0.0
-```
-
-### 2. Import as Packages (Recommended)
-
-#### **Go Service**
-```go
-// go.mod
-module github.com/mycompany/user-service
-
-require (
-    github.com/mycompany/my-api-contracts/adapters/go v1.0.0
-)
-
-// main.go
-import (
-    "github.com/mycompany/my-api-contracts/adapters/go"
-    "github.com/go-chi/chi/v5"
-)
-
-func main() {
-    server := &MyServer{}
-    r := chi.NewRouter()
-    contracts.HandlerFromMux(server, r)
-    http.ListenAndServe(":8080", r)
-}
-```
-
-#### **Python Service**
-```python
-# requirements.txt
-git+https://github.com/mycompany/my-api-contracts.git@v1.0.0#subdirectory=adapters/python
-
-# main.py
-from adapters.python.models import User, UserCreateRequest
-from adapters.python.server.src.contracts.apis.users_api_base import BaseUsersApi
-
-class UsersService(BaseUsersApi):
-    def get_users(self, limit: int = 10, offset: int = 0):
-        # Your implementation
-        pass
-```
-
-#### **TypeScript Client**
-```typescript
-// package.json
-{
-  "dependencies": {
-    "my-api-contracts": "github:mycompany/my-api-contracts#v1.0.0"
-  }
-}
-
-// app.ts
-import { UsersService } from 'my-api-contracts/adapters/typescript/client';
-import type { User } from 'my-api-contracts/adapters/typescript/types';
-
-const users: User[] = await UsersService.getUserList();
-```
-
 ## 🚀 Benefits
+
 - **Single Source of Truth**: API contract drives all implementations
 - **Type Safety**: Generated code provides compile-time validation
 - **Consistency**: Same business logic across all language implementations
@@ -243,29 +226,6 @@ const users: User[] = await UsersService.getUserList();
 - ✅ Version your API specifications
 - ✅ Tag releases after breaking changes
 - ✅ Update all consuming services
-
-## 🏗️ How This Works
-
-```
-1. 📋 Copy this template → your-api-contracts repository
-2. 🎨 Design your API specs in api/
-3. 🔧 Generate adapters for all languages 
-4. 🏷️ Version and publish your contracts
-5. 📦 Your services import as packages
-
-┌─────────────────────────────────────────────┐
-│           your-api-contracts repo           │
-├─────────────────────────────────────────────┤
-│ api/ → generators/ → adapters/              │
-│  ↓         ↓          ↓                     │
-│ Specs → Generate → Published Packages       │
-└─────────────────────────────────────────────┘
-              ↓ (import as dependencies)
-┌──────────────┬──────────────┬──────────────┐
-│ go-service   │ py-service   │ ts-frontend  │
-│ import go/   │ import py/   │ import ts/   │
-└──────────────┴──────────────┴──────────────┘
-```
 
 ## 🔍 Need More Details?
 
