@@ -33,14 +33,14 @@ task install
 ### 2. Design Your API
 
 ```bash
-# 👈 WORK HERE: Customize the API specifications for your domain
+# 👈 <span style="color: green">**WORK HERE**</span>: Customize the API specifications for your domain
 vim api/resources/users/users.yaml
 vim api/schemas/users/User.yaml
 
-# 🔧 HANDS-OFF: Generate adapters from your specifications
+# 🔧 <span style="color: green">**HANDS-OFF**</span>: Generate adapters from your specifications
 task generate
 
-# 📦 IMPORT THESE: Verify everything works
+# 📦 <span style="color: green">**IMPORT THESE**</span>: Verify everything works
 ls adapters/go/
 ls adapters/python/
 ls adapters/typescript/
@@ -121,16 +121,16 @@ const users: User[] = await UsersService.getUserList();
 
 ```
 openapi-forge/
-├── api/                    # API specifications (Domain Layer) 👈 YOU WORK HERE
+├── api/                    # API specifications (Domain Layer) 👈 <span style="color: green">**YOU WORK HERE**</span>
 │   ├── openapi.yaml       # Main OpenAPI spec
 │   ├── parameters/        # Reusable parameters
 │   ├── resources/         # API endpoint definitions
 │   └── schemas/           # Data models and schemas
-├── generators/            # Code generators (Application Layer) 🔧 HANDS-OFF
+├── generators/            # Code generators (Application Layer) 🔧 <span style="color: green">**HANDS-OFF**</span>
 │   ├── go/               # Go toolchain (oapi-codegen)
 │   ├── python/           # Python toolchain (datamodel-code-generator)
 │   └── typescript/       # TypeScript toolchain (@hey-api/openapi-ts)
-├── adapters/             # Generated adapters (Infrastructure Layer) 📦 YOU IMPORT THESE
+├── adapters/             # Generated adapters (Infrastructure Layer) 📦 <span style="color: green">**YOU IMPORT THESE**</span>
 │   ├── go/              # Go server + models
 │   ├── python/          # FastAPI server + models
 │   └── typescript/      # TypeScript client + types
@@ -150,9 +150,9 @@ openapi-forge/
 ### `generators/` - Code Generators (Application Layer) 🔧 **Mostly hands-off**
 Language-specific toolchains with isolated dependencies:
 
-- **🐹 Go**: oapi-codegen v2 with Chi router → Server interfaces, models, middleware
-- **🐍 Python**: datamodel-code-generator + openapi-generator → FastAPI server, Pydantic models  
-- **🟦 TypeScript**: @hey-api/openapi-ts → Fetch client, complete type definitions
+- **Go**: oapi-codegen v2 with Chi router → Server interfaces, models, middleware
+- **Python**: datamodel-code-generator + openapi-generator → FastAPI server, Pydantic models  
+- **TypeScript**: @hey-api/openapi-ts → Fetch client, complete type definitions
 
 > ⚠️ **Implementation details**: You rarely need to modify these. The only common change is updating dependency versions in `requirements.txt`, `package.json`, or `go.mod`.
 
@@ -213,19 +213,6 @@ task all           # Complete build: install → build → generate → lint
 - **Type Safety**: Generated code provides compile-time validation
 - **Consistency**: Same business logic across all language implementations
 - **Maintainability**: Changes in API automatically propagate to all clients/servers
-
-## 🔍 Need More Details?
-
-The generators are **implementation details** that you rarely need to understand. The main workflow is:
-
-1. **Customize** your API specifications in `api/`
-2. **Generate** adapters with `task generate`
-3. **Import** adapters in your services
-
-If you need to update generator dependencies:
-- **Go**: Update `generators/go/go.mod`
-- **Python**: Update `generators/python/requirements.txt`
-- **TypeScript**: Update `generators/typescript/package.json`
 
 ## 🤝 Contributing
 
