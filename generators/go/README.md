@@ -84,7 +84,7 @@ This generator includes its own `go.mod` with isolated dependencies:
 ```go
 module github.com/your-org/openapi-forge/generators/go
 
-go 1.21
+go 1.23.3
 
 require (
     github.com/deepmap/oapi-codegen/v2 v2.1.0

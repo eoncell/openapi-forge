@@ -1,6 +1,6 @@
 module github.com/eoncell/openapi-forge
 
-go 1.22
+go 1.23.3
 
 require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
