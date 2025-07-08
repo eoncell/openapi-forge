@@ -1,0 +1,80 @@
+openapi: "3.0.2"
+info:
+  title: Contracts Blueprint API
+  version: '1.0.0'
+  description: |
+    # Contracts Blueprint API
+    
+    A simple API blueprint demonstrating enterprise-grade OpenAPI specifications
+    with multi-language code generation support for Go, Python, and TypeScript.
+    
+    This API provides basic authentication and user management functionality.
+    
+    ## Features
+    - JWT-based authentication
+    - User CRUD operations
+    - Multi-language SDK generation
+    - Comprehensive error handling
+    
+    ## Error Codes
+    - `ERR_INTERNAL`: Internal server error
+    - `ERR_INVALID_ARG`: Invalid argument(s) provided
+    - `ERR_NOT_FOUND`: Resource not found
+    - `ERR_ALREADY_EXISTS`: Resource already exists
+    - `ERR_ACCESS_DENIED`: Access denied
+    - `ERR_INVALID_CREDENTIALS`: Invalid authentication credentials
+    - `ERR_VALIDATION_FAILED`: Request validation failed
+    
+  contact:
+    name: Contracts Blueprint Team
+    url: https://github.com/example/contracts-blueprint
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.example.com
+    description: Production server
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Authentication
+    description: User authentication
+  - name: Users
+    description: User management
+
+security:
+  - bearerAuth: []
+
+paths:
+  # Health
+  /v1/health:
+    $ref: "./resources/health/health.yaml"
+
+  # Authentication
+  /v1/auth/login:
+    $ref: "./resources/auth/login.yaml"
+  /v1/auth/register:
+    $ref: "./resources/auth/register.yaml"
+  /v1/auth/refresh:
+    $ref: "./resources/auth/refresh.yaml"
+  /v1/auth/logout:
+    $ref: "./resources/auth/logout.yaml"
+
+  # Users
+  /v1/users:
+    $ref: "./resources/users/users.yaml"
+  /v1/users/{userId}:
+    $ref: "./resources/users/user.yaml"
+  /v1/users/{userId}/email:
+    $ref: "./resources/users/userEmail.yaml"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

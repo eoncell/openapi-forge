@@ -1,0 +1,106 @@
+version: '3'
+
+vars:
+  SPEC: openapi/openapi.yaml
+
+tasks:
+  install:
+    desc: Install dependencies for all languages
+    cmds:
+      - go get github.com/go-chi/chi/v5 github.com/oapi-codegen/runtime
+      - go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+      - bun install
+      - pipx install "datamodel-code-generator[http]"
+
+  build:
+    desc: Bundle OpenAPI spec from src/ to openapi/
+    cmds:
+      - mkdir -p openapi
+      - bun run build
+
+  lint:
+    desc: Lint OpenAPI specification
+    deps: [build]
+    cmds:
+      - bun run lint
+
+  generate:
+    desc: Generate code for all languages
+    deps: [build]
+    cmds:
+      - task: generate-go
+      - task: generate-python
+      - task: generate-typescript
+
+  generate-go:
+    desc: Generate Go code from OpenAPI spec
+    deps: [build]
+    cmds:
+      - mkdir -p gen/go
+      - oapi-codegen --config codegen/go/models.yaml {{.SPEC}} > gen/go/models.gen.go
+      - oapi-codegen --config codegen/go/server.yaml {{.SPEC}} > gen/go/server.gen.go
+
+  generate-python:
+    desc: Generate Python code from OpenAPI spec
+    deps: [build]
+    cmds:
+      - mkdir -p gen/python
+      - |
+        datamodel-codegen \
+          --input {{.SPEC}} \
+          --output gen/python/models.py \
+          --output-model-type pydantic_v2.BaseModel \
+          --target-python-version 3.11 \
+          --use-schema-description \
+          --use-field-description \
+          --field-constraints \
+          --use-annotated \
+          --snake-case-field \
+          --strict-types str int float bool \
+          --use-generic-container-types \
+          --use-standard-collections \
+          --use-union-operator
+      - |
+        bunx openapi-generator-cli generate \
+          -i {{.SPEC}} \
+          -g python-fastapi \
+          -o gen/python/server \
+          --package-name contracts \
+          --additional-properties=packageVersion=1.0.0,fastapiImplementationPackage=impl,serverPort=8000
+
+  generate-typescript:
+    desc: Generate TypeScript code from OpenAPI spec
+    deps: [build]
+    cmds:
+      - mkdir -p gen/typescript
+      - |
+        bunx @hey-api/openapi-ts \
+          --input {{.SPEC}} \
+          --output gen/typescript/client \
+          --client @hey-api/client-fetch \
+          --plugins @hey-api/schemas @hey-api/sdk @hey-api/typescript
+      - |
+        bunx @hey-api/openapi-ts \
+          --input {{.SPEC}} \
+          --output gen/typescript/types \
+          --plugins @hey-api/typescript
+
+  dev:
+    desc: Start development server with live preview
+    cmds:
+      - bun run dev
+
+  docs:
+    desc: Build static documentation
+    cmds:
+      - bun run html
+
+  clean:
+    desc: Clean generated files
+    cmds:
+      - rm -rf openapi/
+      - rm -rf gen/
+
+  all:
+    desc: Full build pipeline
+    deps: [install, build, lint, generate]

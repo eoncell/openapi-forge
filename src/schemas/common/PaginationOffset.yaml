@@ -1,0 +1,4 @@
+type: integer
+description: Offset of records to skip.
+minimum: 0
+default: 0 

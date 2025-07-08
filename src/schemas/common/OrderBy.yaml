@@ -1,0 +1,4 @@
+type: array
+description: Order of sorting (ascending/descending). `sortBy` and `orderBy` arrays have always the same length, and each element or `sortBy` array corresponds to the appropriate element of `orderBy` array.
+items:
+  $ref: './Order.yaml' 

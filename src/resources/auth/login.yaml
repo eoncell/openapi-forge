@@ -1,0 +1,49 @@
+post:
+  tags:
+    - Authentication
+  summary: User login
+  description: |
+    Authenticate a user with email/username and password.
+    Returns JWT tokens for subsequent API calls.
+  operationId: authenticateUser
+  security: []  # No auth required for login
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/auth/AuthRequestPayload.yaml'
+  responses:
+    200:
+      description: Login successful
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '../../schemas/auth/TokenResponse.yaml'
+              - type: object
+                properties:
+                  user:
+                    $ref: '../../schemas/users/User.yaml'
+                required:
+                  - user
+    400:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_ARG:
+              value:
+                code: ERR_INVALID_ARG
+    401:
+      description: Invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS

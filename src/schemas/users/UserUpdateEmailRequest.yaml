@@ -1,0 +1,10 @@
+type: object
+description: Request payload for updating user email
+properties:
+  newEmail:
+    $ref: '../common/Email.yaml'
+  password:
+    $ref: '../common/Password.yaml'
+required:
+  - newEmail
+  - password 

@@ -1,0 +1,92 @@
+get:
+  tags:
+    - Users
+  summary: List users
+  description: Get users based on provided filters, sorting and pagination parameters.
+  operationId: getUserList
+  parameters:
+    - $ref: '../../parameters/query/UsersRequestPayload.yaml'
+  responses:
+    200:
+      description: Successful retrieval of users.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../schemas/users/User.yaml'
+              meta:
+                $ref: '../../schemas/common/PaginationMeta.yaml'
+    400:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_ARG:
+              value:
+                code: ERR_INVALID_ARG
+    401:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS
+
+post:
+  tags:
+    - Users
+  summary: Create user
+  description: Create a new user (admin only)
+  operationId: createUser
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/users/UserCreateRequest.yaml'
+  responses:
+    201:
+      description: User successfully created. A new user is returned.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/users/User.yaml'
+    400:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_ARG:
+              value:
+                code: ERR_INVALID_ARG
+    401:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS
+    409:
+      description: User already exists.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_ALREADY_EXISTS:
+              value:
+                code: ERR_ALREADY_EXISTS 

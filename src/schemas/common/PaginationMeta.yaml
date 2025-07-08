@@ -1,0 +1,23 @@
+type: object
+description: Pagination metadata for list responses
+required:
+  - limit
+  - offset
+  - total
+properties:
+  limit:
+    type: integer
+    minimum: 1
+    maximum: 100
+    description: Number of items per page
+    example: 20
+  offset:
+    type: integer
+    minimum: 0
+    description: Offset of records to skip
+    example: 0
+  total:
+    type: integer
+    minimum: 0
+    description: Total number of items
+    example: 150 

@@ -1,0 +1,7 @@
+type: string
+description: Profile role.
+enum:
+  - ADMIN
+  - BUYER
+  - TEAM_LEAD
+example: "BUYER" 

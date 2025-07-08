@@ -1,0 +1,61 @@
+put:
+  tags:
+    - Users
+  summary: Update user email
+  description: Update user email address (requires password confirmation)
+  operationId: updateUserEmail
+  parameters:
+    - $ref: '../../parameters/UserId.yaml'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/users/UserUpdateEmailRequest.yaml'
+  responses:
+    200:
+      description: User email updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/users/User.yaml'
+    400:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_ARG:
+              value:
+                code: ERR_INVALID_ARG
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS
+    403:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_ACCESS_DENIED:
+              value:
+                code: ERR_ACCESS_DENIED
+    404:
+      description: User not found
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_NOT_FOUND:
+              value:
+                code: ERR_NOT_FOUND 

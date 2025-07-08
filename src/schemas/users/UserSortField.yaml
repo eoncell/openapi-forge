@@ -1,0 +1,4 @@
+type: string
+description: Enum defining the fields by which user can sort the users list.
+enum:
+  - FULL_NAME 

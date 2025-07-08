@@ -1,0 +1,18 @@
+# TypeScript Client Generation Configuration
+# Uses @hey-api/openapi-ts for modern TypeScript client generation
+
+# Input and output will be specified via CLI
+# This file defines the generation options
+
+# Client configuration
+client: "@hey-api/client-fetch"
+
+# Output options
+format: true
+lint: true
+
+# Generation plugins
+plugins:
+  - "@hey-api/schemas"
+  - "@hey-api/sdk"
+  - "@hey-api/typescript" 

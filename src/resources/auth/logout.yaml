@@ -1,0 +1,27 @@
+post:
+  tags:
+    - Authentication
+  summary: User logout
+  description: Logout user and invalidate tokens
+  operationId: logoutUser
+  responses:
+    200:
+      description: Logout successful
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS

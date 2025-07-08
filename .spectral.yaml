@@ -1,0 +1,6 @@
+extends: ["spectral:oas"]
+
+rules:
+  # Disable some rules that are optional for a blueprint
+  info-contact: false
+  info-description: false 

@@ -1,0 +1,13 @@
+# TypeScript Types-Only Generation Configuration
+# Uses @hey-api/openapi-ts for TypeScript type definitions only
+
+# Input and output will be specified via CLI
+# This file defines the generation options for types only
+
+# Output options
+format: true
+lint: true
+
+# Generation plugins (types only)
+plugins:
+  - "@hey-api/typescript" 

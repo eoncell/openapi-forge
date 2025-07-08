@@ -1,0 +1,5 @@
+type: string
+description: Enum for sorting order.
+enum:
+  - ASC
+  - DESC 

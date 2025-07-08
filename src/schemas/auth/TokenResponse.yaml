@@ -1,0 +1,24 @@
+type: object
+description: Authentication token response
+properties:
+  accessToken:
+    type: string
+    description: JWT access token
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  refreshToken:
+    type: string
+    description: JWT refresh token
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  accessTokenExpiresInSeconds:
+    type: integer
+    description: Access token expiration time in seconds
+    example: 3600
+  refreshTokenExpiresInSeconds:
+    type: integer
+    description: Refresh token expiration time in seconds
+    example: 604800
+required:
+  - accessToken
+  - refreshToken
+  - accessTokenExpiresInSeconds
+  - refreshTokenExpiresInSeconds 

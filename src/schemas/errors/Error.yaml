@@ -1,0 +1,45 @@
+type: object
+description: Error response payload.
+required:
+  - code
+properties:
+  code:
+    type: string
+    description: |
+      - ERR_ACCESS_DENIED: Access denied. Usually that error can occur when the user is not authorized to perform the operation (e.g. buyer tries to remove admin or buyer tries to add a new user). Mostly theoretical error.
+      - ERR_ALREADY_EXISTS: The record already exists in the system. Usually that error can occur during adding users, that were already added to the system.
+      - ERR_ALREADY_VERIFIED: The request was already verified. Usually that error can occur during verification of the code, that was already verified.
+      - ERR_AUTH_CODE_INVALID: The provided auth code is invalid. Usually that error can occur during verification of the auth code, that is invalid.
+      - ERR_INSUFFICIENT_FUNDS: Insufficient funds. Usually that error can occur during moving (transferring, withdrawing) funds from the account or card, when the source doesn't have enough of funds.
+      - ERR_INTERNAL: Internal server error. Usually that error indicates some general internal server error, that has nothing to do with client's data, so it can be used with 500 http code.
+      - ERR_INVALID_ARG: Invalid argument(s) was (were) provided during the request. Usually that error can occur when one or more arguments (or their combination) were provided in incorrect format or the operation with the given arguments is prohibited (e.g. you can't delete the general account). Usually that error could be eliminated by calling another endpoint in advance, that provides correct values (or options) to call the former endpoint.
+      - ERR_INVALID_CREDENTIALS: Invalid credentials were provided during the request. Usually that error can occur during providing invalid password and/or email.
+      - ERR_NOT_FOUND: The resource was not found. Usually that error can occur during requesting the resource, that was already removed and can't be accessed anymore (e.g. requesting deleted transaction/user/account information).
+      - ERR_WEAK_PASSWORD: Weak password. Usually that error can occur during providing too weak password for sign up or update password processes. That error should not be the case for web clients, since the password weakness is validated on the FE, so if you encountered that error, probably the FE and the BE are not aligned properly with each other.
+      - ERR_CONTACT_SUPPORT: Some error occurred that needs to be escalated to support. That might signal that liquidity is low.
+      - ERR_SELF_TRANSFER: It is not allowed to transfer funds from an account to itself.
+    enum:
+      - ERR_ACCESS_DENIED
+      - ERR_ALREADY_EXISTS
+      - ERR_ALREADY_VERIFIED
+      - ERR_AUTH_CODE_INVALID
+      - ERR_INSUFFICIENT_FUNDS
+      - ERR_INTERNAL
+      - ERR_INVALID_ARG
+      - ERR_INVALID_CREDENTIALS
+      - ERR_NOT_FOUND
+      - ERR_WEAK_PASSWORD
+      - ERR_CONTACT_SUPPORT
+      - ERR_SELF_TRANSFER
+  message:
+    type: string
+    description: Human-readable error message
+    example: "The requested resource was not found"
+  details:
+    type: object
+    description: Additional error details
+    additionalProperties: true
+  timestamp:
+    type: string
+    format: date-time
+    description: Error occurrence timestamp 

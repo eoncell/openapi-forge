@@ -1,0 +1,16 @@
+type: object
+description: Request payload for user registration
+properties:
+  email:
+    $ref: '../common/Email.yaml'
+  password:
+    $ref: '../common/Password.yaml'
+  firstName:
+    $ref: '../common/Name.yaml'
+  lastName:
+    $ref: '../common/Name.yaml'
+required:
+  - email
+  - password
+  - firstName
+  - lastName 

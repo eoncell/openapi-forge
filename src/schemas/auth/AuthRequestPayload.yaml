@@ -1,0 +1,14 @@
+type: object
+description: Request payload for user authentication
+properties:
+  email:
+    $ref: '../common/Email.yaml'
+  password:
+    $ref: '../common/Password.yaml'
+  isRememberMe:
+    type: boolean
+    description: Extend token expiration
+    default: false
+required:
+  - email
+  - password 

@@ -1,0 +1,22 @@
+type: object
+description: Request payload for creating a new user
+properties:
+  email:
+    $ref: '../common/Email.yaml'
+  firstName:
+    $ref: '../common/Name.yaml'
+  lastName:
+    $ref: '../common/Name.yaml'
+  password:
+    $ref: '../common/Password.yaml'
+  role:
+    $ref: './UserRole.yaml'
+    default: BUYER
+  status:
+    $ref: './UserStatus.yaml'
+    default: ACTIVE
+required:
+  - email
+  - firstName
+  - lastName
+  - password 

@@ -1,0 +1,5 @@
+type: string
+pattern: '^.{0,50}$'
+description: Name (either first name or last name) of the user.
+example: 'John'
+default: '' 

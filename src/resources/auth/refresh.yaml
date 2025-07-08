@@ -1,0 +1,42 @@
+post:
+  tags:
+    - Authentication
+  summary: Refresh tokens
+  description: |
+    Refresh access token using refresh token.
+    Returns new JWT tokens.
+  operationId: refreshTokens
+  security: []  # Refresh token is provided in request body
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/auth/AuthTokenRefreshRequestPayload.yaml'
+  responses:
+    200:
+      description: Token refreshed successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/auth/TokenResponse.yaml'
+    400:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_ARG:
+              value:
+                code: ERR_INVALID_ARG
+    401:
+      description: Invalid refresh token
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS

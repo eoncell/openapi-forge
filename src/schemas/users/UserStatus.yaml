@@ -1,0 +1,13 @@
+type: string
+description: |
+  User status.
+  - ACTIVE: The user is currently active and operational.
+  - PENDING: User has been invited but not yet activated by the user.
+  - FROZEN: The user is inactive and not available for transactions.
+  - DELETED: The user has been deleted and is no longer active.
+enum:
+  - ACTIVE
+  - PENDING
+  - FROZEN
+  - DELETED
+example: "ACTIVE" 

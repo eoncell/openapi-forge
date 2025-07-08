@@ -1,0 +1,39 @@
+type: object
+description: User entity representing a system user
+properties:
+  id:
+    $ref: '../common/Id.yaml'
+  email:
+    $ref: '../common/Email.yaml'
+  firstName:
+    $ref: '../common/Name.yaml'
+  lastName:
+    $ref: '../common/Name.yaml'
+  role:
+    $ref: './UserRole.yaml'
+  status:
+    $ref: './UserStatus.yaml'
+  avatarUrl:
+    $ref: './AvatarUrl.yaml'
+  createdAt:
+    type: string
+    format: date-time
+    description: Creation timestamp
+  updatedAt:
+    type: string
+    format: date-time
+    description: Last update timestamp
+  lastLoginAt:
+    type: string
+    format: date-time
+    nullable: true
+    description: Last login timestamp
+required:
+  - id
+  - email
+  - firstName
+  - lastName
+  - role
+  - status
+  - createdAt
+  - updatedAt 

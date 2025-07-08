@@ -1,0 +1,15 @@
+# Python FastAPI Server Generation Configuration
+# Uses openapi-generator python-fastapi
+
+# Basic package information
+packageName: contracts
+packageVersion: 1.0.0
+fastapiImplementationPackage: impl
+
+# Server configuration
+serverPort: 8000
+
+# Code generation options
+generateAliasAsModel: false
+sortParamsByRequiredFlag: true
+sortModelPropertiesByRequiredFlag: true 

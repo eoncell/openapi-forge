@@ -1,0 +1,147 @@
+get:
+  tags:
+    - Users
+  summary: Get user by ID
+  description: Retrieve a specific user by their ID
+  operationId: getUserById
+  parameters:
+    - $ref: '../../parameters/UserId.yaml'
+  responses:
+    200:
+      description: User retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/users/User.yaml'
+    400:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_ARG:
+              value:
+                code: ERR_INVALID_ARG
+    401:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS
+    404:
+      description: User not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_NOT_FOUND:
+              value:
+                code: ERR_NOT_FOUND
+
+put:
+  tags:
+    - Users
+  summary: Update user
+  description: Update a specific user's information
+  operationId: updateUserById
+  parameters:
+    - $ref: '../../parameters/UserId.yaml'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/users/UserUpdateRequest.yaml'
+  responses:
+    200:
+      description: User updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/users/User.yaml'
+    400:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_ARG:
+              value:
+                code: ERR_INVALID_ARG
+    401:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS
+    404:
+      description: User not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_NOT_FOUND:
+              value:
+                code: ERR_NOT_FOUND
+
+delete:
+  tags:
+    - Users
+  summary: Delete user
+  description: Delete a specific user
+  operationId: deleteUserById
+  parameters:
+    - $ref: '../../parameters/UserId.yaml'
+  responses:
+    200:
+      description: User deleted successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    400:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_ARG:
+              value:
+                code: ERR_INVALID_ARG
+    401:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INVALID_CREDENTIALS:
+              value:
+                code: ERR_INVALID_CREDENTIALS
+    404:
+      description: User not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_NOT_FOUND:
+              value:
+                code: ERR_NOT_FOUND

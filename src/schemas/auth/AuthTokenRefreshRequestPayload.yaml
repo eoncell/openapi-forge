@@ -1,0 +1,9 @@
+type: object
+description: Request payload for refreshing authentication tokens
+properties:
+  refreshToken:
+    type: string
+    description: JWT refresh token
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+required:
+  - refreshToken 

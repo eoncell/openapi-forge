@@ -1,0 +1,6 @@
+type: string
+format: uri
+nullable: true
+description: User avatar URL
+maxLength: 500
+example: "https://example.com/avatars/user.jpg" 

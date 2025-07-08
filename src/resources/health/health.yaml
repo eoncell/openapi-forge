@@ -1,0 +1,35 @@
+get:
+  tags:
+    - Health
+  summary: Health check
+  description: Check API health status
+  operationId: getHealthStatus
+  security: []
+  responses:
+    200:
+      description: Service is healthy
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "healthy"
+              timestamp:
+                type: string
+                format: date-time
+                example: "2024-01-15T10:30:00Z"
+              version:
+                type: string
+                example: "1.0.0"
+    500:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/errors/Error.yaml'
+          examples:
+            ERR_INTERNAL:
+              value:
+                code: ERR_INTERNAL 

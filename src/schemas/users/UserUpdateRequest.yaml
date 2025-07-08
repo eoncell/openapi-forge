@@ -1,0 +1,13 @@
+type: object
+description: Request payload for updating user information
+properties:
+  firstName:
+    $ref: '../common/Name.yaml'
+  lastName:
+    $ref: '../common/Name.yaml'
+  role:
+    $ref: './UserRole.yaml'
+  status:
+    $ref: './UserStatus.yaml'
+  avatarUrl:
+    $ref: './AvatarUrl.yaml' 

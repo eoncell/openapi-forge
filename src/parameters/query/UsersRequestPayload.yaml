@@ -1,0 +1,41 @@
+name: UsersRequestPayload
+in: query
+required: true
+description: Filter, sort and pagination query to fetch records.
+content:
+  application/json:
+    schema:
+      type: object
+      description: Users request payload.
+      properties:
+        limit:
+          $ref: '../../schemas/common/Limit.yaml'
+        offset:
+          $ref: '../../schemas/common/PaginationOffset.yaml'
+        filter:
+          type: object
+          description: Filter criteria for selecting records.
+          properties:
+            text:
+              type: string
+              description: Full text search.
+            statuses:
+              type: array
+              description: Filter by user statuses.
+              items:
+                $ref: '../../schemas/users/UserStatus.yaml'
+            roles:
+              type: array
+              description: Filter by user roles.
+              items:
+                $ref: '../../schemas/users/UserRole.yaml'
+        sortBy:
+          type: array
+          description: Fields to sort the results by.
+          items:
+            $ref: '../../schemas/users/UserSortField.yaml'
+        orderBy:
+          $ref: '../../schemas/common/OrderBy.yaml'
+      required:
+        - limit
+        - offset 

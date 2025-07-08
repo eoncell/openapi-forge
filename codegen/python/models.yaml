@@ -1,0 +1,22 @@
+# Python Models Generation Configuration
+# Uses datamodel-code-generator for Pydantic models
+
+# Input: OpenAPI specification file (will be passed via CLI)
+# Output: Python Pydantic models
+
+# Generation options
+output_model_type: pydantic_v2.BaseModel
+target_python_version: "3.11"
+use_schema_description: true
+use_field_description: true
+field_constraints: true
+use_annotated: true
+snake_case_field: true
+strict_types:
+  - str
+  - int
+  - float
+  - bool
+use_generic_container_types: true
+use_standard_collections: true
+use_union_operator: true 
