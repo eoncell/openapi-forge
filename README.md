@@ -1,6 +1,8 @@
 # OpenAPI Forge
 
-A modern OpenAPI code generation tool built with Clean Architecture principles, enabling multi-language code generation for Go, Python, and TypeScript from a single API specification.
+A **template** for creating API contract repositories with Clean Architecture principles, enabling multi-language code generation for Go, Python, and TypeScript from a single API specification.
+
+> 🎯 **This is a blueprint/template** - copy it to create your own API contracts repository!
 
 ## 🎯 Purpose
 
@@ -10,24 +12,30 @@ OpenAPI Forge demonstrates how to build enterprise-grade API tooling with:
 - **Developer-friendly** project structure and workflows
 - **Production-ready** generated adapters
 
-## 🏗️ Clean Architecture Philosophy
+## 🏗️ Project Structure
 
-### Domain Layer: `api/`
-- **Single source of truth** for API specifications
-- **Modular schema design** using `$ref` patterns
-- **Domain-driven organization** (auth, users, common)
+### `api/` - API Specifications (Domain Layer)
+- `openapi.yaml` - Main API specification
+- `resources/` - Endpoint definitions by domain
+- `schemas/` - Reusable data models
+- `parameters/` - Shared parameters
 
-### Application Layer: `generators/`
-- **Language-specific toolchains** with isolated dependencies
-- **Generation configurations** tailored per technology
-- **Build automation** and dependency management
+### `generators/` - Code Generators (Application Layer)
+- Language-specific toolchains with isolated dependencies
+- See individual README files for detailed documentation
 
-### Infrastructure Layer: `adapters/`
-- **Ready-to-use code** generated from specifications
-- **Language-native implementations** (Go servers, Python FastAPI, TypeScript clients)
-- **Production-ready** with proper typing and validation
+### `adapters/` - Generated Adapters (Infrastructure Layer)
+- Production-ready code generated from specifications
+- Import these as packages in your services/applications
 
-## 📁 Project Structure
+### 🛠️ Root Configuration
+| File | Purpose |
+|------|---------|
+| `📄 Taskfile.yml` | Build automation and task orchestration |
+| `📄 package.json` | Core tooling (Redocly, Spectral) |
+| `📄 .spectral.yaml` | API linting rules |
+
+
 
 ```
 openapi-forge/
@@ -51,17 +59,49 @@ openapi-forge/
 
 ## 🚀 Quick Start
 
-```bash
-# 1. Install dependencies
-task install
+### 1. Create Your API Contracts Repository
 
-# 2. Generate all adapters
+```bash
+# Use this repository as a template for your own API contracts
+git clone https://github.com/eoncell/openapi-forge.git my-api-contracts
+cd my-api-contracts
+
+# Make it your own repository
+rm -rf .git
+git init
+git remote add origin https://github.com/mycompany/my-api-contracts.git
+
+# Install dependencies
+task install
+```
+
+### 2. Design Your API
+
+```bash
+# Customize the API specifications for your domain
+vim api/resources/users/users.yaml
+vim api/schemas/users/User.yaml
+
+# Generate adapters from your specifications
 task generate
 
-# 3. View generated code
+# Verify everything works
 ls adapters/go/
 ls adapters/python/
 ls adapters/typescript/
+```
+
+### 3. Publish Your Contracts
+
+```bash
+# Commit and publish your API contracts
+git add .
+git commit -m "feat: initial API contracts"
+git push origin main
+
+# Tag a version for consumption
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 ## 🔧 Available Tasks
@@ -105,129 +145,85 @@ Each generator is a self-contained toolchain in the Application Layer:
 - **Output**: Fetch client, complete type definitions
 - **📖 Full Documentation**: [generators/typescript/README.md](generators/typescript/README.md)
 
-## 🏛️ Schema Architecture
-
-### 📦 Common Schemas (`api/schemas/common/`)
-Reusable components across all domains:
-- `Email.yaml`, `Password.yaml`, `Id.yaml`
-- `PaginationMeta.yaml`, `Order.yaml`
-
-### 🔐 Auth Schemas (`api/schemas/auth/`)
-Authentication and authorization:
-- `AuthRequestPayload.yaml`, `TokenResponse.yaml`
-- `RegisterRequestPayload.yaml`
-
-### 👥 User Schemas (`api/schemas/users/`)
-User management domain:
-- `User.yaml`, `UserCreateRequest.yaml`
-- `UserUpdateRequest.yaml`, `UserRole.yaml`
-
 ## 📋 Development Workflow
 
-### 1. API-First Development
+### 1. API-First Development (In Your Contracts Repository)
 ```bash
-# Design your API in api/openapi.yaml
-vim api/resources/users/users.yaml
+# After copying this template to your own repository...
 
-# Generate adapters
+# Design your API specifications
+vim api/resources/users/users.yaml
+vim api/schemas/users/User.yaml
+
+# Generate adapters from your custom specifications
 task generate
 
-# Use in your services
-cp -r adapters/go/ ../my-go-service/contracts/
-cp -r adapters/python/ ../my-python-service/contracts/
-cp -r adapters/typescript/ ../my-frontend/api-client/
+# Version and publish your contracts
+git add . && git commit -m "feat: add user management API"
+git tag v1.0.0 && git push origin v1.0.0
 ```
 
-### 2. Integration Examples
+### 2. Import as Packages (Recommended)
 
-#### Go Service
+#### **Go Service**
 ```go
-import "your-module/adapters/go"
+// go.mod
+module github.com/mycompany/user-service
 
-type Server struct{}
-func (s *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
-    // Implementation using generated types
+require (
+    github.com/mycompany/my-api-contracts/adapters/go v1.0.0
+)
+
+// main.go
+import (
+    "github.com/mycompany/my-api-contracts/adapters/go"
+    "github.com/go-chi/chi/v5"
+)
+
+func main() {
+    server := &MyServer{}
+    r := chi.NewRouter()
+    contracts.HandlerFromMux(server, r)
+    http.ListenAndServe(":8080", r)
 }
 ```
 
-#### Python Service
+#### **Python Service**
 ```python
+# requirements.txt
+git+https://github.com/mycompany/my-api-contracts.git@v1.0.0#subdirectory=adapters/python
+
+# main.py
 from adapters.python.models import User, UserCreateRequest
 from adapters.python.server.src.contracts.apis.users_api_base import BaseUsersApi
 
 class UsersService(BaseUsersApi):
     def get_users(self, limit: int = 10, offset: int = 0):
-        # Implementation
+        # Your implementation
         pass
 ```
 
-#### TypeScript Client
+#### **TypeScript Client**
 ```typescript
-import { UsersService } from './adapters/typescript/client';
-import type { User } from './adapters/typescript/types';
+// package.json
+{
+  "dependencies": {
+    "my-api-contracts": "github:mycompany/my-api-contracts#v1.0.0"
+  }
+}
+
+// app.ts
+import { UsersService } from 'my-api-contracts/adapters/typescript/client';
+import type { User } from 'my-api-contracts/adapters/typescript/types';
 
 const users: User[] = await UsersService.getUserList();
 ```
 
-## ✨ Clean Architecture Benefits
-
-### 🎯 Separation of Concerns
-- **API specifications** remain pure and language-agnostic
-- **Generators** are isolated with their own dependencies
-- **Adapters** are production-ready without manual modifications
-
-### 🔄 Dependency Isolation
-Each generator has its own dependency management:
-- **Go**: `generators/go/go.mod`
-- **Python**: `generators/python/requirements.txt`
-- **TypeScript**: `generators/typescript/package.json`
-
-### 🚀 Enterprise Benefits
+## 🚀 Benefits
 - **Single Source of Truth**: API contract drives all implementations
 - **Type Safety**: Generated code provides compile-time validation
 - **Consistency**: Same business logic across all language implementations
 - **Maintainability**: Changes in API automatically propagate to all clients/servers
-
-## 🚀 Adding New Domains
-
-```bash
-# 1. Create schema files
-mkdir -p api/schemas/products
-touch api/schemas/products/Product.yaml
-
-# 2. Create endpoint files  
-mkdir -p api/resources/products
-touch api/resources/products/products.yaml
-
-# 3. Update main spec
-# Edit api/openapi.yaml to include new paths
-
-# 4. Generate adapters
-task generate
-```
-
-## 📋 File Organization
-
-### 🎯 `api/` - API Specifications (Domain Layer)
-- `openapi.yaml` - Main API specification
-- `resources/` - Endpoint definitions by domain
-- `schemas/` - Reusable data models
-- `parameters/` - Shared parameters
-
-### 🔧 `generators/` - Code Generators (Application Layer)
-- Language-specific toolchains with isolated dependencies
-- See individual README files for detailed documentation
-
-### ⚡ `adapters/` - Generated Adapters (Infrastructure Layer)
-- Production-ready code generated from specifications
-- Copy these into your services/applications
-
-### 🛠️ Root Configuration
-| File | Purpose |
-|------|---------|
-| `📄 Taskfile.yml` | Build automation and task orchestration |
-| `📄 package.json` | Core tooling (Redocly, Spectral) |
-| `📄 .spectral.yaml` | API linting rules |
 
 ## 🎯 Best Practices
 
@@ -240,13 +236,36 @@ task generate
 ### Development Workflow
 - ✅ Design API first in `api/openapi.yaml`
 - ✅ Generate adapters with `task generate`
-- ✅ Copy adapters to your services
+- ✅ Import adapters as packages (not copy!)
 - ✅ Implement business logic using generated types
 
 ### Versioning
 - ✅ Version your API specifications
 - ✅ Tag releases after breaking changes
 - ✅ Update all consuming services
+
+## 🏗️ How This Works
+
+```
+1. 📋 Copy this template → your-api-contracts repository
+2. 🎨 Design your API specs in api/
+3. 🔧 Generate adapters for all languages 
+4. 🏷️ Version and publish your contracts
+5. 📦 Your services import as packages
+
+┌─────────────────────────────────────────────┐
+│           your-api-contracts repo           │
+├─────────────────────────────────────────────┤
+│ api/ → generators/ → adapters/              │
+│  ↓         ↓          ↓                     │
+│ Specs → Generate → Published Packages       │
+└─────────────────────────────────────────────┘
+              ↓ (import as dependencies)
+┌──────────────┬──────────────┬──────────────┐
+│ go-service   │ py-service   │ ts-frontend  │
+│ import go/   │ import py/   │ import ts/   │
+└──────────────┴──────────────┴──────────────┘
+```
 
 ## 🔍 Need More Details?
 
